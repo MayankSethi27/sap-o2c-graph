@@ -1,0 +1,12 @@
+backend/.env
+backend/o2c.db
+backend/venv/
+frontend/node_modules/
+frontend/dist/
+frontend/.env*
+**/__pycache__/
+**/*.pyc
+.env
+.DS_Store
+Thumbs.db
+CLAUDE.md
