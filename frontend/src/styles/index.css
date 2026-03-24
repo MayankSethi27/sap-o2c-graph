@@ -32,26 +32,85 @@ header h1 {
   font-weight: 600;
 }
 
-.minimize-btn {
+/* Graph controls — top-left overlay */
+.graph-controls {
   position: absolute;
   top: 12px;
   left: 12px;
   z-index: 5;
-  background: rgba(255, 255, 255, 0.92);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.graph-ctrl-btn {
+  background: rgba(255, 255, 255, 0.94);
   color: #1a237e;
   border: 1px solid #ccc;
-  padding: 6px 16px;
+  padding: 5px 14px;
   border-radius: 6px;
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  transition: background 0.15s, box-shadow 0.15s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  line-height: 1.2;
 }
 
-.minimize-btn:hover {
+.graph-ctrl-btn:hover {
   background: #e8eaf6;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+}
+
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+.zoom-controls .graph-ctrl-btn {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  min-width: 32px;
+}
+
+.zoom-controls .graph-ctrl-btn:first-child {
+  border-right: 1px solid #e0e0e0;
+}
+
+.zoom-controls .graph-ctrl-btn:last-child {
+  border-left: 1px solid #e0e0e0;
+}
+
+.zoom-level {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #555;
+  min-width: 44px;
+  text-align: center;
+  padding: 0 2px;
+  user-select: none;
+}
+
+/* Resizable divider between graph and chat */
+.resize-divider {
+  width: 5px;
+  cursor: col-resize;
+  background: #ddd;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.resize-divider:hover {
+  background: #1a237e;
 }
 
 .stats {
@@ -67,7 +126,6 @@ header h1 {
 }
 
 .graph-section {
-  flex: 7;
   position: relative;
   display: flex;
   overflow: hidden;
@@ -245,15 +303,12 @@ header h1 {
   color: #1a237e;
 }
 
-/* Chat sidebar — 30% right panel */
+/* Chat sidebar — resizable right panel */
 .chat-sidebar {
-  flex: 3;
   background: white;
-  border-left: 1px solid #ddd;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  min-width: 320px;
 }
 
 /* Chat Panel */

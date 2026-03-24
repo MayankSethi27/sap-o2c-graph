@@ -1,7 +1,7 @@
-import { useRef, useCallback, useState, useImperativeHandle, forwardRef } from "react";
+import { useRef, useCallback, useState, useImperativeHandle, forwardRef, useEffect } from "react";
 import ForceGraph2D from "react-force-graph-2d";
 
-const GraphView = forwardRef(function GraphView({ graphData, onNodeClick }, ref) {
+const GraphView = forwardRef(function GraphView({ graphData, onNodeClick, onZoomChange }, ref) {
   const graphRef = useRef();
   const containerRef = useRef();
   const [hoveredNode, setHoveredNode] = useState(null);
@@ -10,6 +10,15 @@ const GraphView = forwardRef(function GraphView({ graphData, onNodeClick }, ref)
     zoomToFit: () => {
       graphRef.current?.zoomToFit(500, 40);
     },
+    zoomIn: () => {
+      const current = graphRef.current?.zoom() || 1;
+      graphRef.current?.zoom(current * 1.4, 300);
+    },
+    zoomOut: () => {
+      const current = graphRef.current?.zoom() || 1;
+      graphRef.current?.zoom(current / 1.4, 300);
+    },
+    getZoom: () => graphRef.current?.zoom() || 1,
   }));
 
   const handleNodeClick = useCallback(
@@ -18,7 +27,6 @@ const GraphView = forwardRef(function GraphView({ graphData, onNodeClick }, ref)
         graphRef.current.centerAt(node.x, node.y, 500);
         graphRef.current.zoom(3, 500);
 
-        // Calculate screen position after centering animation
         setTimeout(() => {
           const coords = graphRef.current.graph2ScreenCoords(node.x, node.y);
           const rect = containerRef.current.getBoundingClientRect();
@@ -34,11 +42,17 @@ const GraphView = forwardRef(function GraphView({ graphData, onNodeClick }, ref)
     [onNodeClick]
   );
 
+  const handleZoom = useCallback(
+    (transform) => {
+      onZoomChange?.(Math.round(transform.k * 100));
+    },
+    [onZoomChange]
+  );
+
   const paintNode = useCallback((node, ctx, globalScale) => {
     const isHovered = hoveredNode === node.id;
     const radius = isHovered ? 10 : 7;
 
-    // Outer glow on hover
     if (isHovered) {
       ctx.beginPath();
       ctx.arc(node.x, node.y, radius + 3, 0, 2 * Math.PI);
@@ -54,7 +68,6 @@ const GraphView = forwardRef(function GraphView({ graphData, onNodeClick }, ref)
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // Show label only on hover
     if (isHovered) {
       const fontSize = Math.max(11 / globalScale, 3);
       ctx.font = `600 ${fontSize}px Sans-Serif`;
@@ -88,6 +101,7 @@ const GraphView = forwardRef(function GraphView({ graphData, onNodeClick }, ref)
         linkDirectionalArrowRelPos={1}
         linkDirectionalArrowColor={() => "rgba(150,150,150,0.4)"}
         onNodeClick={handleNodeClick}
+        onZoom={handleZoom}
         cooldownTicks={100}
         d3AlphaDecay={0.03}
         d3VelocityDecay={0.4}
