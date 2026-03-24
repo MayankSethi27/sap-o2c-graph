@@ -2,6 +2,7 @@ services:
   - type: web
     name: sap-o2c-graph-explorer
     runtime: python
+    pythonVersion: "3.11.6"
     buildCommand: bash build.sh
     startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
